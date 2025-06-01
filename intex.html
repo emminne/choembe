@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tỏ tình em meo</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      font-family: 'Courier New', monospace;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -2;
+    }
+
+    .falling-text, .heart {
+      position: absolute;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .falling-text {
+      font-size: 24px;
+      color: white;
+      animation: fall linear;
+      opacity: 0.9;
+    }
+
+    .heart {
+      color: pink;
+      font-size: 20px;
+      animation: floatUp linear;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-50px) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<script>
+  const texts = [
+    "anh yêu em", "em meooo", "yêu ngọc mai số 1 thế giới", "chỉ muốn em thôi",
+    "nhớ em bé lắmmm", "thích được ở với em", "em meo là của em Min thoi",
+    "muốn ôm em", "em là tất cả của anh", "muốn emmmm", "em oiiiii",
+    "thương em nhất", "muốn được ở bên em"
+  ];
+
+  const colors = ["#ffffff", "#ff99cc", "#66ccff", "#ccff66"];
+  const container = document.body;
+
+  function createText() {
+    const span = document.createElement("span");
+    span.className = "falling-text";
+    span.textContent = texts[Math.floor(Math.random() * texts.length)];
+    span.style.left = Math.random() * window.innerWidth + "px";
+    span.style.top = "-40px";
+    span.style.color = colors[Math.floor(Math.random() * colors.length)];
+    span.style.fontSize = (Math.random() * 12 + 18) + "px";
+    span.style.animationDuration = (Math.random() * 5 + 5) + "s";
+    container.appendChild(span);
+    setTimeout(() => span.remove(), 10000);
+  }
+
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = "💖";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.bottom = "-30px";
+    heart.style.fontSize = (Math.random() * 10 + 16) + "px";
+    heart.style.animationDuration = (Math.random() * 5 + 5) + "s";
+    container.appendChild(heart);
+    setTimeout(() => heart.remove(), 10000);
+  }
+
+  setInterval(createText, 300);
+  setInterval(createHeart, 400);
+
+  // Star background
+  const canvas = document.getElementById("stars");
+  const ctx = canvas.getContext("2d");
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  const stars = Array.from({ length: 150 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 1.5 + 0.5,
+    alpha: Math.random()
+  }));
+
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(star => {
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${star.alpha})`;
+      ctx.fill();
+      star.alpha += (Math.random() - 0.5) * 0.05;
+      star.alpha = Math.max(0.1, Math.min(star.alpha, 1));
+    });
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
+</script>
+</body>
+</html>
